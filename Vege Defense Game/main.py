@@ -2,6 +2,34 @@ import pygame
 import sys
 
 from units import Vegetable, Enemy, Base, EnemyBase, return_alive
+
+# Functions
+
+def on_win():
+    global game_state
+    game_state = "win"
+
+def on_lose():
+    global game_state
+    game_state = "lose"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Game Setup
 
 # Initialise Pygame
@@ -23,10 +51,10 @@ font = pygame.font.SysFont("Arial", 30)
 background_img = pygame.image.load("assets/background.png")
 
 veggies = [Vegetable()]
-base = Base()
+base = Base(on_destroy=on_lose)
 
 enemies = [Enemy(), Enemy()]
-enemy_base = EnemyBase()
+enemy_base = EnemyBase(on_destroy=on_win)
 
 # Resize (if needed) to match window size
 background_img = pygame.transform.scale(background_img, (WIDTH,HEIGHT))
@@ -37,9 +65,12 @@ FPS = 60
 
 
 
+
+
 # Main game loop
 running = True
 message = None
+game_state = "playing"  # or "win" or "lose"
 while running:
     # Control FPS
     clock.tick(FPS)

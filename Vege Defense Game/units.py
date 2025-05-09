@@ -70,11 +70,13 @@ class Vegetable:
 
 
 class Base:
-    def __init__(self):
+    def __init__(self, on_destroy=None):
         self.image = pygame.image.load("assets/base.png")
         self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
         self.health = 1000
+        self.on_destroy = on_destroy   # Store callback function for when base gets destroy
+
 
 
     def draw(self, surface):
@@ -86,8 +88,8 @@ class Base:
     def take_damage(self, damage):
         self.health -= damage
         print(f"Base health: {self.health}")
-        if self.health <= 0:
-            print("You win!")
+        if self.health <= 0 and self.on_destroy:
+            self.on_destroy()   # Call the callback function when base is destroyed
             
 
 
@@ -144,11 +146,12 @@ class Enemy:
 
         
 class EnemyBase:
-    def __init__(self):
+    def __init__(self, on_destroy=None):
         self.image = pygame.image.load("assets/enemy_base.png")
         self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
         self.health = 1000
+        self.on_destroy = on_destroy  # Store callback function for when base gets destroy
 
 
     def draw(self, surface):
@@ -160,8 +163,8 @@ class EnemyBase:
     def take_damage(self, amount):
         self.health -= amount
         print(f"Enemy base health: {self.health}")
-        if self.health <= 0:
-            print("You win!")
+        if self.health <= 0 and self.on_destroy:
+            self.on_destroy()           # Call the callback function when enemy base is destroyed
             
 
 
