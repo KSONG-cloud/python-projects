@@ -8,13 +8,106 @@ class Vegetable:
         self.image = pygame.transform.scale(self.image, (60,60))
         self.x = x
         self.y = y
-        self.speed = 2
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.speed = 1
+        self.health = 5
 
     def move(self):
-        self.x += self.speed
+        global enemies
+
+        if not self.is_blocked_by_enemy(enemies):
+            self.x += self.speed
+            self.rect.x += self.speed
+        
+            
 
     def draw(self, surface):
         surface.blit(self.image, (self.x, self.y))
+        font = pygame.font.Font(None, 36)
+        health_text = font.render(f"HP: {self.health}", True, (0,255, 0))
+        screen.blit(health_text, (self.rect.x, self.rect.y - 20))
+
+
+    def check_collision(self, enemy):
+        # Check for collision with an enemy
+        if self.rect.colliderect(enemy.rect):
+            self.attack(enemy)
+    
+    def take_damage(self):
+        self.health -= 1  # Reduce health when the veggie is attacked
+        if self.health <= 0:
+            self.kill()  # Remove veggie if health is 0
+
+    def kill(self):
+        global veggies  # Declare veggies as global
+        veggies.remove(self)  # Remove the veggie from the list
+    
+    def attack(self, enemy):
+        enemy.take_damage()
+
+    def is_blocked_by_enemy(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect):
+                return True
+        return False
+
+
+
+
+class Enemy: 
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load("assets/enemy.png")
+        self.rect = self.image.get_rect(topleft=(self.x,self.y))
+        self.health = 15
+        self.speed = 1
+
+    def move(self):
+        global veggies
+        if not self.is_blocked_by_enemy(veggies):
+            self.x -= self.speed
+            self.rect.x -= self.speed
+        
+
+       
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.x, self.y))
+        font = pygame.font.Font(None, 36)
+        health_text = font.render(f"HP: {self.health}", True, (255, 0, 0))
+        screen.blit(health_text, (self.rect.x, self.rect.y - 20))
+
+
+    def check_collision(self, enemy):
+        # Check for collision with an enemy
+        if self.rect.colliderect(enemy.rect):
+            self.attack(enemy)
+    
+
+    def is_blocked_by_enemy(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect):
+                return True
+        return False
+
+
+    def take_damage(self):
+        self.health -= 1
+        if self.health <= 0:
+            self.kill()         # Remove enemy if health is 0
+
+
+    def kill(self):
+        global enemies
+        enemies.remove(self)
+        
+
+    def attack(self, vege):
+        vege.take_damage()  # Deal damage to the vege
+        
+
+
 
 
 
@@ -39,7 +132,10 @@ font = pygame.font.SysFont("Arial", 30)
 background_img = pygame.image.load("assets/background.png")
 base_img = pygame.image.load("assets/base.png")
 
-veggies = [Vegetable(100, HEIGHT-130), Vegetable(100, HEIGHT-110), Vegetable(100, HEIGHT-120)]
+veggies = [Vegetable(100, HEIGHT-120)]
+
+enemies = [Enemy(400, HEIGHT - 120), Enemy(600, HEIGHT - 120)]
+
 
 # Resize (if needed) to match window size
 background_img = pygame.transform.scale(background_img, (WIDTH,HEIGHT))
@@ -77,6 +173,16 @@ while running:
     for vege in veggies:
         vege.move()
         vege.draw(screen)
+
+        # Check for collisions between veggie and enemies
+        for enemy in enemies: 
+            vege.check_collision(enemy)
+
+    for enemy in enemies:
+        enemy.move()
+        enemy.draw(screen)
+        for vege in veggies:
+            enemy.check_collision(vege)
 
     # Max veggies spawned message
     if message:
