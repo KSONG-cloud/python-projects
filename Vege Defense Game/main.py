@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from units import Vegetable, Enemy, Base, EnemyBase
+from units import Vegetable, Enemy, Base, EnemyBase, return_alive
 ## Game Setup
 
 # Initialise Pygame
@@ -21,19 +21,15 @@ font = pygame.font.SysFont("Arial", 30)
 
 # Load images
 background_img = pygame.image.load("assets/background.png")
-base_img = pygame.image.load("assets/base.png")
-enemy_base_img = pygame.image.load("assets/enemy_base.png")
 
-veggies = [Vegetable(100, HEIGHT-120)]
+veggies = [Vegetable()]
+base = Base()
 
-enemies = [Enemy(400, HEIGHT - 120), Enemy(600, HEIGHT - 120)]
+enemies = [Enemy(), Enemy()]
 enemy_base = EnemyBase()
 
 # Resize (if needed) to match window size
 background_img = pygame.transform.scale(background_img, (WIDTH,HEIGHT))
-base_img = pygame.transform.scale(base_img, (100,100))
-enemy_base_img = pygame.transform.scale(enemy_base_img, (100,100))
-
 
 # Set up clock for FPS control
 clock = pygame.time.Clock()
@@ -55,20 +51,19 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:     # Spacebar is pressed
                 if len(veggies) < MAX_VEGGIES:
-                    veggies.append(Vegetable(100, HEIGHT-120))
+                    veggies.append(Vegetable())
                 else:
                     # Create a message when max limit has been reached
                     message = font.render("Max number of veggies spawned!", True, (255,0,0)) # The boolean value is for anti-aliasing. Anti-aliasing is a computer graphics technique that reduces jagged edges in images, especially in curves and diagonal lines, by blending pixels to create a smoother appearance.
 
     # Draw background and base
     screen.blit(background_img, (0,0))          # Draw background
-    screen.blit(base_img, (10, HEIGHT - 120))   # Draw base near bottom left
-    # screen.blit(enemy_base_img, (WIDTH - 10 - enemy_base_img.get_width(), HEIGHT - 120)) 
+    base.draw(screen)
     enemy_base.draw(screen)
     
     # Spawning the vegetables!!
     for vege in veggies:
-        vege.move()
+        vege.move(enemies, enemy_base)
         vege.draw(screen)
 
         # Check for collisions between veggie and enemies
@@ -79,10 +74,12 @@ while running:
         if vege.rect.colliderect(enemy_base.rect):
             enemy_base.take_damage(vege.damage)
 
+        
+
 
 
     for enemy in enemies:
-        enemy.move()
+        enemy.move(veggies, base)
         enemy.draw(screen)
 
         # Check for collisions between veggie and enemies
@@ -90,8 +87,12 @@ while running:
             enemy.check_collision(vege)
 
         # Collision with our base
+        if enemy.rect.colliderect(base.rect):
+            base.take_damage(enemy.damage)
 
-
+    # Return alive entities
+    veggies = return_alive(veggies)
+    enemies = return_alive(enemies)
 
 
     # Max veggies spawned message

@@ -1,24 +1,36 @@
 import pygame
 import sys
 
+# from main import veggies, enemies, base, enemy_base
 
+# Constants for window size
+WIDTH, HEIGHT       = 800, 400
+
+BASE_COORDS         = (10,HEIGHT - 20)                       # Bottom Left
+ENEMY_BASE_COORDS   = (WIDTH - 10,HEIGHT - 20)      # Bottom Right
+BASE_IMG_DIMENSION  = (100,100)
+
+# Constants for gameplay
+BASE_DAMAGE_MULTIPLIER = 10
 
 # Class for a unit in the game
 class Vegetable:
-    def __init__(self,x,y):
+    def __init__(self):
         self.image = pygame.image.load("assets/carrot2.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (60,60))
-        self.x = x
-        self.y = y
-        self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        # self.x = x
+        # self.y = y
+        # self.rect = self.image.get_rect(topleft=(self.x, self.y))
+        self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
+        self.x = self.rect.x
+        self.y = self.rect.y
         self.speed = 1
         self.health = 5
-        self.damage = 10
+        self.damage = 1
 
-    def move(self):
-        global enemies
+    def move(self, enemies, enemy_base):
 
-        if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base():
+        if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base(enemy_base):
             self.x += self.speed
             self.rect.x += self.speed
         
@@ -28,7 +40,7 @@ class Vegetable:
         surface.blit(self.image, (self.x, self.y))
         font = pygame.font.Font(None, 36)
         health_text = font.render(f"HP: {self.health}", True, (0,255, 0))
-        screen.blit(health_text, (self.rect.x, self.rect.y - 20))
+        surface.blit(health_text, (self.rect.x, self.rect.y - 20))
 
 
     def check_collision(self, enemy):
@@ -36,17 +48,14 @@ class Vegetable:
         if self.rect.colliderect(enemy.rect):
             self.attack(enemy)
     
-    def take_damage(self):
-        self.health -= 1  # Reduce health when the veggie is attacked
-        if self.health <= 0:
-            self.kill()  # Remove veggie if health is 0
+    def take_damage(self, damage):
+        self.health -= damage  # Reduce health when the veggie is attacked
 
-    def kill(self):
-        global veggies  # Declare veggies as global
-        veggies.remove(self)  # Remove the veggie from the list
+
+    
     
     def attack(self, enemy):
-        enemy.take_damage()
+        enemy.take_damage(self.damage)
 
     def is_blocked_by_enemy(self, enemies):
         for enemy in enemies:
@@ -55,17 +64,16 @@ class Vegetable:
         return False
     
 
-    def is_blocked_by_base(self):
-        if self.x + self.rect.width >= WIDTH - 10 - enemy_base_img.get_width() + 1:
-            return True
-        else:
-            return False
+    def is_blocked_by_base(self, base):
+
+        return self.rect.colliderect(base.rect)
+
 
 class Base:
     def __init__(self):
-        self.image = pygame.image.load("assets/enemy_base.png")
-        self.image = pygame.transform.scale(enemy_base_img, (100,100))
-        self.rect = self.image.get_rect(bottomright=(WIDTH - 10, HEIGHT-120 + self.image.get_height()))
+        self.image = pygame.image.load("assets/base.png")
+        self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
+        self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
         self.health = 1000
 
 
@@ -75,29 +83,28 @@ class Base:
         health_text = font.render(f"Base HP: {self.health}", True, (0,0,0))
         surface.blit(health_text, (self.rect.x -50, self.rect.y -20))
 
-    def take_damage(self, amount):
-        self.health -= amount
-        print(f"Enemy base health: {self.health}")
+    def take_damage(self, damage):
+        self.health -= damage
+        print(f"Base health: {self.health}")
         if self.health <= 0:
             print("You win!")
-            pygame.quit()
-            sys.exit()
+            
 
 
 
 class Enemy: 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self):  
         self.image = pygame.image.load("assets/enemy.png")
         self.image = pygame.transform.scale(self.image, (50,50))
-        self.rect = self.image.get_rect(topleft=(self.x,self.y))
+        self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
+        self.x = self.rect.x
+        self.y = self.rect.y
         self.health = 15
         self.speed = 1
+        self.damage = 1
 
-    def move(self):
-        global veggies
-        if not self.is_blocked_by_enemy(veggies) and not self.is_blocked_by_base():
+    def move(self, enemies, enemy_base):
+        if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base(enemy_base):
             self.x -= self.speed
             self.rect.x -= self.speed
         
@@ -107,7 +114,7 @@ class Enemy:
         surface.blit(self.image, (self.x, self.y))
         font = pygame.font.Font(None, 36)
         health_text = font.render(f"HP: {self.health}", True, (255, 0, 0))
-        screen.blit(health_text, (self.rect.x, self.rect.y - 20))
+        surface.blit(health_text, (self.rect.x, self.rect.y - 20))
 
 
     def check_collision(self, enemy):
@@ -122,33 +129,25 @@ class Enemy:
                 return True
         return False
 
-    def is_blocked_by_base(self):
-        if self.x  <= 10 + base_img.get_width() - 1:
-            return True
-        else:
-            return False
+    def is_blocked_by_base(self, base):
 
-    def take_damage(self):
-        self.health -= 1
-        if self.health <= 0:
-            self.kill()         # Remove enemy if health is 0
+        return self.rect.colliderect(base.rect)
+  
 
-
-    def kill(self):
-        global enemies
-        enemies.remove(self)
+    def take_damage(self, damage):
+        self.health -= damage 
         
 
     def attack(self, vege):
-        vege.take_damage()  # Deal damage to the vege
+        vege.take_damage(self.damage)  # Deal damage to the vege
 
 
         
 class EnemyBase:
     def __init__(self):
         self.image = pygame.image.load("assets/enemy_base.png")
-        self.image = pygame.transform.scale(enemy_base_img, (100,100))
-        self.rect = self.image.get_rect(bottomright=(WIDTH - 10, HEIGHT-120 + self.image.get_height()))
+        self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
+        self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
         self.health = 1000
 
 
@@ -164,3 +163,12 @@ class EnemyBase:
         if self.health <= 0:
             print("You win!")
             
+
+
+def return_alive(entities):
+    alive_entities = []
+    for entity in entities:
+        if entity.health > 0:
+            alive_entities.append(entity)
+    
+    return  alive_entities
