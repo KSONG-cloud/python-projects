@@ -15,27 +15,18 @@ BASE_DAMAGE_MULTIPLIER = 10
 
 # Class for a unit in the game
 class Vegetable:
-    def __init__(self):
-        self.image = pygame.image.load("assets/carrot2.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (60,60))
-        # self.x = x
-        # self.y = y
-        # self.rect = self.image.get_rect(topleft=(self.x, self.y))
-        self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-        self.x = self.rect.x
-        self.y = self.rect.y
-        self.speed = 10
-        self.health = 5
-        self.damage = 1
-        self.attack_delay = 500
-        self.last_attack_time = 0
+    def __init__(self, health, damage, speed, rect, image):
+        self.health = health
+        self.damage = damage
+        self.speed = speed
+        self.rect = rect
+        self.image = image
+
 
     def move(self, enemies, enemy_base):
-
         if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base(enemy_base):
             self.x += self.speed
             self.rect.x += self.speed
-        
             
 
     def draw(self, surface):
@@ -50,17 +41,17 @@ class Vegetable:
         if self.rect.colliderect(enemy.rect):
             self.attack(enemy)
     
+
     def take_damage(self, damage):
         self.health -= damage  # Reduce health when the veggie is attacked
 
 
-    
-    
     def attack(self, enemy):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_attack_time >= self.attack_delay:
             enemy.take_damage(self.damage)
             self.last_attack_time = current_time
+
 
     def is_blocked_by_enemy(self, enemies):
         for enemy in enemies:
@@ -70,8 +61,25 @@ class Vegetable:
     
 
     def is_blocked_by_base(self, base):
-
         return self.rect.colliderect(base.rect)
+
+
+class Carrot(Vegetable):
+    def __init__(self):  
+        self.image = pygame.image.load("assets/carrot2.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (60,60))
+        self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.speed = 10
+        self.health = 5
+        self.damage = 1
+        self.attack_delay = 500
+        self.last_attack_time = 0
+        super().__init__(self.health, self.damage, self.speed, self.rect, self.image)
+
+
+
 
 
 class Base:
@@ -79,7 +87,7 @@ class Base:
         self.image = pygame.image.load("assets/base.png")
         self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-        self.health = 1000
+        self.health = 5
         self.on_destroy = on_destroy   # Store callback function for when base gets destroy
 
 
@@ -93,30 +101,27 @@ class Base:
     def take_damage(self, damage):
         self.health -= damage
         print(f"Base health: {self.health}")
-        if self.health <= 0 and self.on_destroy:
-            self.on_destroy()   # Call the callback function when base is destroyed
-            
-
+        if self.health <= 0:
+            if self.on_destroy:
+                self.on_destroy()      # Call the callback function when base is destroyed
 
 
 class Enemy: 
-    def __init__(self):  
-        self.image = pygame.image.load("assets/enemy.png")
-        self.image = pygame.transform.scale(self.image, (50,50))
-        self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
+    def __init__(self, health, damage, speed, rect, image):  
+        self.image = image  
+        self.rect = rect
         self.x = self.rect.x
         self.y = self.rect.y
-        self.health = 15
-        self.speed = 1
-        self.damage = 1
-        self.attack_delay = 500
-        self.last_attack_time = 0
+        self.health = health
+        self.speed = speed
+        self.damage = damage
+
+
 
     def move(self, enemies, enemy_base):
         if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base(enemy_base):
             self.x -= self.speed
             self.rect.x -= self.speed
-        
 
 
     def draw(self, surface):
@@ -138,8 +143,8 @@ class Enemy:
                 return True
         return False
 
-    def is_blocked_by_base(self, base):
 
+    def is_blocked_by_base(self, base):
         return self.rect.colliderect(base.rect)
   
 
@@ -154,6 +159,21 @@ class Enemy:
             self.last_attack_time = current_time
 
 
+
+
+class Apple(Enemy):
+    def __init__(self):  
+        self.image = pygame.image.load("assets/enemy.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (50,50))
+        self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.health = 15
+        self.speed = 10
+        self.damage = 1
+        self.attack_delay = 500
+        self.last_attack_time = 0
+        super().__init__(self.health, self.damage, self.speed, self.rect, self.image)
 
         
 class EnemyBase:
@@ -171,6 +191,7 @@ class EnemyBase:
         health_text = font.render(f"Base HP: {self.health}", True, (0,0,0))
         surface.blit(health_text, (self.rect.x -50, self.rect.y -20))
 
+
     def take_damage(self, amount):
         self.health -= amount
         if self.health <= 0:
@@ -180,7 +201,7 @@ class EnemyBase:
                 
             
 
-
+# Function for removing dead entities
 def return_alive(entities):
     alive_entities = []
     for entity in entities:

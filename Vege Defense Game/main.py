@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from units import Vegetable, Enemy, Base, EnemyBase, return_alive
+from units import Carrot, Enemy, Base, EnemyBase, return_alive
 
 # Functions
 
@@ -12,7 +12,6 @@ def on_win():
 
 def on_gameover():
     global game_state
-    print("Game state set to game_over HHUHUHUHHHHHHHHHUHUHUHUHUHHHUHUh")
     game_state = "gameover"
 
 
@@ -98,10 +97,10 @@ def draw_popup(screen, message, buttons):
 
 
 ## Helper functions to deal with in between games
-def reset_game():
-    global veggies, enemies, base, enemy_base, game_state
-    veggies = [Vegetable()]
-    enemies = []
+def reset_game(starting_state):
+    global  game_state
+    veggies = starting_state["veggies"].copy()
+    enemies = starting_state["enemies"].copy()
     base = Base(on_destroy=on_gameover)
     enemy_base = EnemyBase(on_destroy=on_win)
     game_state = "playing"
@@ -137,10 +136,12 @@ font = pygame.font.SysFont("Arial", 30)
 # Load images
 background_img = pygame.image.load("assets/background.png")
 
-veggies = [Vegetable()]
+starting_state = {"veggies":[Carrot()], "enemies":[Enemy()]}
+
+veggies = starting_state["veggies"].copy()
 base = Base(on_destroy=on_gameover)
 
-enemies = []
+enemies = starting_state["enemies"].copy()
 enemy_base = EnemyBase(on_destroy=on_win)
 
 # enemy_base.on_destroy()
@@ -153,7 +154,11 @@ background_img = pygame.transform.scale(background_img, (WIDTH,HEIGHT))
 clock = pygame.time.Clock()
 FPS = 60
 
-
+# Character to keypad matching
+UNIT_KEYS = {
+    pygame.K_1: Carrot,
+    pygame.K_KP1: Carrot,
+}
 
 
 
@@ -165,9 +170,6 @@ button_rects = []
 while running:
     # Control FPS
     clock.tick(FPS)
-    
-    
-
 
     # Event handling
     for event in pygame.event.get():
@@ -185,9 +187,11 @@ while running:
                             pygame.quit()
                             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:     # Spacebar is pressed
+            if event.key in UNIT_KEYS:
                 if len(veggies) < MAX_VEGGIES:
-                    veggies.append(Vegetable())
+                    unit_class = UNIT_KEYS[event.key]
+                    new_unit = unit_class()
+                    veggies.append(new_unit)
                 else:
                     # Create a message when max limit has been reached
                     message = font.render("Max number of veggies spawned!", True, (255,0,0)) # The boolean value is for anti-aliasing. Anti-aliasing is a computer graphics technique that reduces jagged edges in images, especially in curves and diagonal lines, by blending pixels to create a smoother appearance.
@@ -226,8 +230,11 @@ while running:
             enemy.check_collision(vege)
 
         # Collision with our base
+        current_time = pygame.time.get_ticks()
         if enemy.rect.colliderect(base.rect):
-            base.take_damage(enemy.damage)
+            if (current_time - enemy.last_attack_time >= enemy.attack_delay):
+                base.take_damage(enemy.damage)
+                enemy.last_attack_time = current_time
 
     # Return alive entities
     veggies = return_alive(veggies)
