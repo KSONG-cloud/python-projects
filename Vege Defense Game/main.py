@@ -8,6 +8,8 @@ from units import Apple, Banana, Orange, Grape, Pineapple, Mango, Watermelon, St
 
 from units import Base, EnemyBase, return_alive
 
+from level_manager import LevelManager
+
 # Functions
 ## Callback functions for changing game state when either base or enemy base is destroyed
 def on_win():
@@ -76,30 +78,11 @@ def load_next_level(starting_state):
     reset_game(starting_state)
 
 
-## Helper function to spawn enemies
-def spawn_enemy(enemies, enemy_type):
-    enemy = enemy_type()
-    enemies.append(enemy)
-    return enemies
-
-
-
-## Level Data
-level_data = {
-    1: [
-        {"time": 2000, "enemy": Apple},
-        {"time": 5000, "enemy": Orange},
-        {"time": 10000, "enemy": Pineapple},
-        {"time": 15000, "enemy": Apple},
-    ],
-    2: [
-        {"time": 2000, "enemy": Orange},
-        {"time": 5000, "enemy": Pineapple},
-        {"time": 8000, "enemy": Apple},
-        {"time": 12000, "enemy": Pineapple},
-    ]
-}
-
+# ## Helper function to spawn enemies
+# def spawn_enemy(enemies, enemy_type):
+#     enemy = enemy_type()
+#     enemies.append(enemy)
+#     return enemies
 
 
 # Game Setup
@@ -111,7 +94,7 @@ pygame.init()
 ## Constants for window size
 WIDTH, HEIGHT = 800, 400
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
-pygame.display.set_caption("Cat Defense Game")
+pygame.display.set_caption("Vege Defense Game")
 
 ## Constants related to Game 
 MAX_VEGGIES = 50
@@ -166,9 +149,7 @@ UNIT_KEYS = {
 
 ## Game state
 current_level = 1
-level_start_time = pygame.time.get_ticks()
-current_time = 0
-level_events = level_data.get(current_level, [])
+level_manager = LevelManager(level=1)
 
 running = True
 message = None
@@ -176,12 +157,10 @@ game_state = "playing"  # or "win" or "gameover"
 button_rects = []
 
 
-
-
 while running:
     # Control FPS
     clock.tick(FPS)
-    current_time = pygame.time.get_ticks() - level_start_time
+    current_time = pygame.time.get_ticks() - level_manager.level_start_time
 
     # Event handling
     for event in pygame.event.get():
@@ -230,10 +209,10 @@ while running:
 
         
     # Spawning Enemies!!!
-    for event in level_events:
-        if current_time >= event["time"]:
-            enemies = spawn_enemy(enemies, event["enemy"])
-            level_events.remove(event)
+    enemies_to_spawn = level_manager.update(current_time=current_time)
+    
+    for enemy in enemies_to_spawn:
+        enemies.append(enemy)
 
 
     for enemy in enemies:
