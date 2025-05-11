@@ -1,15 +1,14 @@
 import pygame
+import random
 import sys
 
 from units import Carrot, Broccoli, Tomato, Lettuce, Eggplant, Corn, Onion, Pepper, Cabbage, Zucchini
 
 from units import Apple, Banana, Orange, Grape, Pineapple, Mango, Watermelon, Strawberry, Cherry, Coconut, Lemon
 
-
 from units import Base, EnemyBase, return_alive
 
 # Functions
-
 ## Callback functions for changing game state when either base or enemy base is destroyed
 def on_win():
     global game_state
@@ -18,7 +17,6 @@ def on_win():
 def on_gameover():
     global game_state
     game_state = "gameover"
-
 
 
 ## Bluring screen
@@ -36,8 +34,6 @@ def draw_popup(screen, message, buttons):
     overlay.fill((0,0,0,180)) # Last value is alpha
     screen.blit(overlay, (0,0))
 
-    
-
     # Pop up box
     box_rect = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2 - 100, 300, 200)
     pygame.draw.rect(screen,(255,255,255), box_rect,border_radius=12)
@@ -48,7 +44,6 @@ def draw_popup(screen, message, buttons):
     text = font.render(message, True, (0,0,0))
     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 40))
     screen.blit(text, text_rect)
-
 
     # Buttons
     button_rects = []
@@ -62,7 +57,6 @@ def draw_popup(screen, message, buttons):
         btn_text_rect = btn_text.get_rect(center=rect.center)
         screen.blit(btn_text, btn_text_rect)
         button_rects.append((rect, action))
-
 
     return button_rects
 
@@ -82,57 +76,77 @@ def load_next_level(starting_state):
     reset_game(starting_state)
 
 
+## Helper function to spawn enemies
+def spawn_enemy(enemies, enemy_type):
+    enemy = enemy_type()
+    enemies.append(enemy)
+    return enemies
 
 
 
+## Level Data
+level_data = {
+    1: [
+        {"time": 2000, "enemy": Apple},
+        {"time": 5000, "enemy": Orange},
+        {"time": 10000, "enemy": Pineapple},
+        {"time": 15000, "enemy": Apple},
+    ],
+    2: [
+        {"time": 2000, "enemy": Orange},
+        {"time": 5000, "enemy": Pineapple},
+        {"time": 8000, "enemy": Apple},
+        {"time": 12000, "enemy": Pineapple},
+    ]
+}
 
 
-## Game Setup
 
-# Initialise Pygame
+# Game Setup
+
+## Initialise Pygame
 pygame.init()
 
 
-# Constants for window size
+## Constants for window size
 WIDTH, HEIGHT = 800, 400
 screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Cat Defense Game")
 
-# Constants related to Game 
+## Constants related to Game 
 MAX_VEGGIES = 50
 
-# Font for text rendering
+## Font for text rendering
 font = pygame.font.SysFont("Arial", 30)
 
-# Load images
+## Load images
 background_img = pygame.image.load("assets/background.png")
 
 # TODO: Fix this thing. When it restarts, it is still using the same unit,
 # instead of defining new ones
 # Maybe just a list of the class and have a for loop to add units to veggies and enemies??
 starting_state = {
-    "veggies":[Carrot()], 
+    "veggies":[], 
     "enemies":[Apple(), Apple(), Banana(), Orange(), Grape(), 
                Pineapple(), Mango(), Watermelon(), 
                Strawberry(), Cherry(), Coconut(), Lemon()]}
 
-veggies = starting_state["veggies"].copy()
+veggies = []
 base = Base(on_destroy=on_gameover)
 
-enemies = starting_state["enemies"].copy()
+# enemies = starting_state["enemies"].copy()
+enemies = []
 enemy_base = EnemyBase(on_destroy=on_win)
 
-# enemy_base.on_destroy()
 
-
-# Resize (if needed) to match window size
+## Resize (if needed) to match window size
 background_img = pygame.transform.scale(background_img, (WIDTH,HEIGHT))
 
-# Set up clock for FPS control
+## Set up clock for FPS control
 clock = pygame.time.Clock()
 FPS = 60
 
-# Character to keypad matching
+## Character to keypad matching
 UNIT_KEYS = {
     pygame.K_1: Carrot,     pygame.K_KP1: Carrot,
     pygame.K_2: Broccoli,   pygame.K_KP2: Broccoli,
@@ -149,13 +163,25 @@ UNIT_KEYS = {
 
 
 # Main game loop
+
+## Game state
+current_level = 1
+level_start_time = pygame.time.get_ticks()
+current_time = 0
+level_events = level_data.get(current_level, [])
+
 running = True
 message = None
 game_state = "playing"  # or "win" or "gameover"
 button_rects = []
+
+
+
+
 while running:
     # Control FPS
     clock.tick(FPS)
+    current_time = pygame.time.get_ticks() - level_start_time
 
     # Event handling
     for event in pygame.event.get():
@@ -197,14 +223,17 @@ while running:
             vege.check_collision(enemy)
 
         # Collision with enemy base
-        current_time = pygame.time.get_ticks()
         if vege.rect.colliderect(enemy_base.rect):
             if (current_time - vege.last_attack_time >= vege.attack_delay):
                 enemy_base.take_damage(vege.damage)
                 vege.last_attack_time = current_time
 
         
-
+    # Spawning Enemies!!!
+    for event in level_events:
+        if current_time >= event["time"]:
+            enemies = spawn_enemy(enemies, event["enemy"])
+            level_events.remove(event)
 
 
     for enemy in enemies:
@@ -216,7 +245,6 @@ while running:
             enemy.check_collision(vege)
 
         # Collision with our base
-        current_time = pygame.time.get_ticks()
         if enemy.rect.colliderect(base.rect):
             if (current_time - enemy.last_attack_time >= enemy.attack_delay):
                 base.take_damage(enemy.damage)
