@@ -24,9 +24,11 @@ class Vegetable:
         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
         self.x = self.rect.x
         self.y = self.rect.y
-        self.speed = 1
+        self.speed = 10
         self.health = 5
         self.damage = 1
+        self.attack_delay = 500
+        self.last_attack_time = 0
 
     def move(self, enemies, enemy_base):
 
@@ -55,7 +57,10 @@ class Vegetable:
     
     
     def attack(self, enemy):
-        enemy.take_damage(self.damage)
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_attack_time >= self.attack_delay:
+            enemy.take_damage(self.damage)
+            self.last_attack_time = current_time
 
     def is_blocked_by_enemy(self, enemies):
         for enemy in enemies:
@@ -104,6 +109,8 @@ class Enemy:
         self.health = 15
         self.speed = 1
         self.damage = 1
+        self.attack_delay = 500
+        self.last_attack_time = 0
 
     def move(self, enemies, enemy_base):
         if not self.is_blocked_by_enemy(enemies) and not self.is_blocked_by_base(enemy_base):
@@ -141,7 +148,11 @@ class Enemy:
         
 
     def attack(self, vege):
-        vege.take_damage(self.damage)  # Deal damage to the vege
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_attack_time >= self.attack_delay:
+            vege.take_damage(self.damage)  # Deal damage to the vege
+            self.last_attack_time = current_time
+
 
 
         
@@ -150,7 +161,7 @@ class EnemyBase:
         self.image = pygame.image.load("assets/enemy_base.png")
         self.image = pygame.transform.scale(self.image, BASE_IMG_DIMENSION)
         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-        self.health = 1000
+        self.health = 10
         self.on_destroy = on_destroy  # Store callback function for when base gets destroy
 
 
@@ -162,9 +173,11 @@ class EnemyBase:
 
     def take_damage(self, amount):
         self.health -= amount
-        print(f"Enemy base health: {self.health}")
-        if self.health <= 0 and self.on_destroy:
-            self.on_destroy()           # Call the callback function when enemy base is destroyed
+        if self.health <= 0:
+            if self.on_destroy:
+                self.on_destroy()           # Call the callback function when enemy base is destroyed
+
+                
             
 
 
