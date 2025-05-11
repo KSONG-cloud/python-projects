@@ -1,7 +1,12 @@
 import pygame
 import sys
 
-from units import Carrot, Enemy, Base, EnemyBase, return_alive
+from units import Carrot, Broccoli, Tomato, Lettuce, Eggplant, Corn, Onion, Pepper, Cabbage, Zucchini
+
+from units import Apple, Banana, Orange, Grape, Pineapple, Mango, Watermelon, Strawberry, Cherry, Coconut, Lemon
+
+
+from units import Base, EnemyBase, return_alive
 
 # Functions
 
@@ -62,40 +67,6 @@ def draw_popup(screen, message, buttons):
     return button_rects
 
 
-# def draw_popup(screen, message, buttons):
-#     # Step 1: darken overlay
-#     overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-#     overlay.fill((0, 0, 0, 150))  # 150 = semi-transparent black
-#     screen.blit(overlay, (0, 0))
-
-#     # Step 2: popup box
-#     popup_rect = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2 - 100, 300, 200)
-#     pygame.draw.rect(screen, (255, 255, 255), popup_rect)  # white box
-#     pygame.draw.rect(screen, (0, 0, 0), popup_rect, 3)     # black border
-
-#     # Step 3: main message
-#     font = pygame.font.Font(None, 48)
-#     text = font.render(message, True, (0, 0, 0))
-#     text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 40))
-#     screen.blit(text, text_rect)
-
-#     # Step 4: draw buttons
-#     button_rects = []
-#     for i, (label, action) in enumerate(buttons):
-#         btn_rect = pygame.Rect(WIDTH // 2 - 100 + i * 120, HEIGHT // 2 + 30, 100, 40)
-#         pygame.draw.rect(screen, (180, 180, 180), btn_rect)
-#         pygame.draw.rect(screen, (0, 0, 0), btn_rect, 2)
-
-#         btn_font = pygame.font.Font(None, 32)
-#         btn_text = btn_font.render(label, True, (0, 0, 0))
-#         screen.blit(btn_text, btn_text.get_rect(center=btn_rect.center))
-
-#         button_rects.append((btn_rect, action))
-
-#     print(f"[Popup] drew {len(button_rects)} buttons for '{message}'")
-#     return button_rects
-
-
 ## Helper functions to deal with in between games
 def reset_game(starting_state):
     global  game_state
@@ -106,9 +77,9 @@ def reset_game(starting_state):
     game_state = "playing"
 
 
-def load_next_level():
+def load_next_level(starting_state):
     # No next level yet....
-    reset_game()
+    reset_game(starting_state)
 
 
 
@@ -128,7 +99,7 @@ screen = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Cat Defense Game")
 
 # Constants related to Game 
-MAX_VEGGIES = 5
+MAX_VEGGIES = 50
 
 # Font for text rendering
 font = pygame.font.SysFont("Arial", 30)
@@ -136,7 +107,14 @@ font = pygame.font.SysFont("Arial", 30)
 # Load images
 background_img = pygame.image.load("assets/background.png")
 
-starting_state = {"veggies":[Carrot()], "enemies":[Enemy()]}
+# TODO: Fix this thing. When it restarts, it is still using the same unit,
+# instead of defining new ones
+# Maybe just a list of the class and have a for loop to add units to veggies and enemies??
+starting_state = {
+    "veggies":[Carrot()], 
+    "enemies":[Apple(), Apple(), Banana(), Orange(), Grape(), 
+               Pineapple(), Mango(), Watermelon(), 
+               Strawberry(), Cherry(), Coconut(), Lemon()]}
 
 veggies = starting_state["veggies"].copy()
 base = Base(on_destroy=on_gameover)
@@ -156,8 +134,16 @@ FPS = 60
 
 # Character to keypad matching
 UNIT_KEYS = {
-    pygame.K_1: Carrot,
-    pygame.K_KP1: Carrot,
+    pygame.K_1: Carrot,     pygame.K_KP1: Carrot,
+    pygame.K_2: Broccoli,   pygame.K_KP2: Broccoli,
+    pygame.K_3: Tomato,     pygame.K_KP3: Tomato,
+    pygame.K_4: Lettuce,    pygame.K_KP4: Lettuce,
+    pygame.K_5: Eggplant,   pygame.K_KP5: Eggplant,
+    pygame.K_6: Corn,       pygame.K_KP6: Corn,
+    pygame.K_7: Onion,      pygame.K_KP7: Onion,
+    pygame.K_8: Pepper,     pygame.K_KP8: Pepper,
+    pygame.K_9: Cabbage,    pygame.K_KP9: Cabbage,
+    pygame.K_0: Zucchini,   pygame.K_KP0: Zucchini,
 }
 
 
@@ -180,9 +166,9 @@ while running:
                 for rect,action in button_rects:
                     if rect.collidepoint(event.pos):
                         if action == "restart":
-                            reset_game()
+                            reset_game(starting_state)
                         elif action == "next":
-                            load_next_level()
+                            load_next_level(starting_state)
                         elif action == "quit":
                             pygame.quit()
                             sys.exit()
