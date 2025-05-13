@@ -1,0 +1,82 @@
+{
+  "Carrot": {
+    "image_path": "assets/carrot2.png",
+    "health": 5,
+    "damage": 1,
+    "speed": 1,
+    "attack_range": 20,
+    "attack_delay": 500
+  },
+  "Broccoli": {
+    "image_path": "assets/broccoli.png",
+    "health": 10,
+    "damage": 2,
+    "speed": 6,
+    "attack_range": 20,
+    "attack_delay": 600
+  },
+  "Tomato": {
+    "image_path": "assets/tomato.png",
+    "health": 4,
+    "damage": 3,
+    "speed": 12,
+    "attack_range": 20,
+    "attack_delay": 400
+  },
+  "Lettuce": {
+    "image_path": "assets/lettuce.png",
+    "health": 6,
+    "damage": 1,
+    "speed": 8,
+    "attack_range": 20,
+    "attack_delay": 500
+  },
+  "Eggplant": {
+    "image_path": "assets/eggplant.png",
+    "health": 8,
+    "damage": 4,
+    "speed": 5,
+    "attack_range": 20,
+    "attack_delay": 700
+  },
+  "Corn": {
+    "image_path": "assets/corn.png",
+    "health": 7,
+    "damage": 2,
+    "speed": 9,
+    "attack_range": 20,
+    "attack_delay": 450
+  },
+  "Onion": {
+    "image_path": "assets/onion.png",
+    "health": 5,
+    "damage": 3,
+    "speed": 7,
+    "attack_range": 20,
+    "attack_delay": 480
+  },
+  "Pepper": {
+    "image_path": "assets/pepper.png",
+    "health": 6,
+    "damage": 2,
+    "speed": 11,
+    "attack_range": 20,
+    "attack_delay": 520
+  },
+  "Cabbage": {
+    "image_path": "assets/cabbage.png",
+    "health": 9,
+    "damage": 1,
+    "speed": 6,
+    "attack_range": 20,
+    "attack_delay": 550
+  },
+  "Zucchini": {
+    "image_path": "assets/zucchini.png",
+    "health": 6,
+    "damage": 3,
+    "speed": 10,
+    "attack_range": 20,
+    "attack_delay": 470
+  }
+}

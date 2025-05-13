@@ -1,0 +1,90 @@
+{
+  "Apple": {
+    "image_path": "assets/apple.png",
+    "health": 15,
+    "damage": 1,
+    "speed": 10,
+    "attack_range": 5,
+    "attack_delay": 500
+  },
+  "Banana": {
+    "image_path": "assets/banana.png",
+    "health": 10,
+    "damage": 1,
+    "speed": 12,
+    "attack_range": 30,
+    "attack_delay": 600
+  },
+  "Orange": {
+    "image_path": "assets/orange.png",
+    "health": 12,
+    "damage": 2,
+    "speed": 8,
+    "attack_range": 40,
+    "attack_delay": 450
+  },
+  "Grape": {
+    "image_path": "assets/grape.png",
+    "health": 8,
+    "damage": 3,
+    "speed": 6,
+    "attack_range": 25,
+    "attack_delay": 700
+  },
+  "Pineapple": {
+    "image_path": "assets/pineapple.png",
+    "health": 15,
+    "damage": 2,
+    "speed": 9,
+    "attack_range": 50,
+    "attack_delay": 550
+  },
+  "Mango": {
+    "image_path": "assets/mango.png",
+    "health": 10,
+    "damage": 4,
+    "speed": 7,
+    "attack_range": 20,
+    "attack_delay": 400
+  },
+  "Watermelon": {
+    "image_path": "assets/watermelon.png",
+    "health": 18,
+    "damage": 1,
+    "speed": 6,
+    "attack_range": 60,
+    "attack_delay": 500
+  },
+  "Strawberry": {
+    "image_path": "assets/strawberry.png",
+    "health": 7,
+    "damage": 3,
+    "speed": 10,
+    "attack_range": 15,
+    "attack_delay": 650
+  },
+  "Cherry": {
+    "image_path": "assets/cherry.png",
+    "health": 9,
+    "damage": 2,
+    "speed": 8,
+    "attack_range": 25,
+    "attack_delay": 600
+  },
+  "Coconut": {
+    "image_path": "assets/coconut.png",
+    "health": 16,
+    "damage": 3,
+    "speed": 5,
+    "attack_range": 45,
+    "attack_delay": 550
+  },
+  "Lemon": {
+    "image_path": "assets/lemon.png",
+    "health": 11,
+    "damage": 2,
+    "speed": 9,
+    "attack_range": 35,
+    "attack_delay": 500
+  }
+}
