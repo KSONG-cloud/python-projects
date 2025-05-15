@@ -4,10 +4,10 @@ import sys
 # from main import veggies, enemies, base, enemy_base
 
 # Constants for window size
-WIDTH, HEIGHT       = 800, 400
+WIDTH, HEIGHT       = 1200, 600
 
-BASE_COORDS         = (10,HEIGHT - 20)                       # Bottom Left
-ENEMY_BASE_COORDS   = (WIDTH - 10,HEIGHT - 20)      # Bottom Right
+BASE_COORDS         = (10,HEIGHT - 180)                       # Bottom Left
+ENEMY_BASE_COORDS   = (WIDTH - 10,HEIGHT - 180)      # Bottom Right
 BASE_IMG_DIMENSION  = (100,100)
 
 # Constants for gameplay

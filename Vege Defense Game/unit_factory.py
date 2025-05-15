@@ -1,14 +1,6 @@
 import pygame
 import json
-from units import Vegetable, Enemy
-
-
-# Constants for window size
-WIDTH, HEIGHT       = 800, 400
-
-BASE_COORDS         = (10,HEIGHT - 20)                       # Bottom Left
-ENEMY_BASE_COORDS   = (WIDTH - 10,HEIGHT - 20)      # Bottom Right
-BASE_IMG_DIMENSION  = (100,100)
+from units import Vegetable, Enemy, WIDTH, HEIGHT, BASE_COORDS, ENEMY_BASE_COORDS, BASE_IMG_DIMENSION
 
 
 # Load config files
@@ -56,7 +48,11 @@ def create_enemy(name):
     )
 
 
+def get_unit_names():
+    return list(UNIT_CONFIG.keys())
 
+def get_unit_image_path(name):
+    return UNIT_CONFIG[name]['image_path']
 
 
 

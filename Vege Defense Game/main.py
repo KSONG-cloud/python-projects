@@ -4,11 +4,12 @@ import random
 import sys
 
 
-from units import Base, EnemyBase, return_alive
+from units import Base, EnemyBase, return_alive, WIDTH, HEIGHT, BASE_COORDS
 
 from level_manager import LevelManager
 
-from unit_factory import create_veggie, create_enemy
+from unit_factory import create_veggie, create_enemy, get_unit_image_path
+
 
 
 
@@ -56,6 +57,34 @@ def draw_popup(screen, message, buttons, width, height):
     return button_rects
 
 
+## Create UI buttons
+### Load images from config files
+def  load_unit_button_images(unit_names):
+    images = {}
+    for name in unit_names:
+        img_path = get_unit_image_path(name)
+        img = pygame.image.load(img_path).convert_alpha()
+        img = pygame.transform.scale(img, (40, 40))
+        images[name] = img
+    return images
+
+### Create buttons
+def create_ui_buttons(unit_names, rows=2, cols=5, btn_w=60, btn_h=60, gap=10):
+    buttons = []
+    margin_w = (WIDTH - 5 * btn_w)// 2
+    margin_h = (HEIGHT - BASE_COORDS[1] - 2 * btn_h) // 2
+    for idx, name in enumerate(unit_names):
+        row = idx // cols
+        col = idx % cols
+        x = margin_w + col * (btn_w + gap)
+        y = BASE_COORDS[1] + margin_h + row * (btn_h + gap)
+        rect = pygame.Rect(x,y,btn_w, btn_h)
+        buttons.append((rect, name))
+
+    return buttons
+
+
+
 ## Reset game
 def reset_game(state, on_gameover, on_win):
     state["veggies"] = []
@@ -82,7 +111,6 @@ def main():
     pygame.init()
 
     ## Constants for window size
-    WIDTH, HEIGHT = 800, 400
     screen = pygame.display.set_mode((WIDTH,HEIGHT))
     pygame.display.set_caption("Vege Defense Game")
 
@@ -117,6 +145,10 @@ def main():
         pygame.K_0: "Zucchini",   pygame.K_KP0: "Zucchini"
 
     }
+
+    UNIT_NAMES = ["Carrot", "Broccoli", "Tomato", "Lettuce", "Eggplant", "Corn", "Onion", "Pepper", "Cabbage", "Zucchini"]
+    unit_button_images = load_unit_button_images(UNIT_NAMES)
+    ui_buttons = create_ui_buttons(UNIT_NAMES)
 
 
     # Main game loop
@@ -157,6 +189,8 @@ def main():
         # Control FPS
         clock.tick(FPS)
         current_time = pygame.time.get_ticks() - game_state['level_manager'].level_start_time
+
+        
         
 
         # Event handling
@@ -176,6 +210,13 @@ def main():
                             elif action == "quit":
                                 pygame.quit()
                                 sys.exit()
+                for rect, name in ui_buttons:
+                    if rect.collidepoint(event.pos):
+                        if len(game_state["veggies"]) < MAX_VEGGIES:
+                            new_unit = create_veggie(name)
+                            game_state["veggies"].append(new_unit)
+                        else:
+                            message = font.render("Max number of veggies spawned!", True, (255, 0, 0))
 
             elif event.type == pygame.KEYDOWN:
                 if event.key in UNIT_KEYS:
@@ -188,9 +229,20 @@ def main():
                         message = font.render("Max number of veggies spawned!", True, (255,0,0)) # The boolean value is for anti-aliasing. Anti-aliasing is a computer graphics technique that reduces jagged edges in images, especially in curves and diagonal lines, by blending pixels to create a smoother appearance.
 
         # Draw background and base
-        screen.blit(background_img, (0,0))          # Draw background
+        # screen.blit(background_img, (0,0))          # Draw background
+        screen.blit(background_img, (0, 0), area=pygame.Rect(0, 0, WIDTH, BASE_COORDS[1] + 10))
+        ui_bg_rect = pygame.Rect(0, BASE_COORDS[1] + 10, WIDTH, HEIGHT - BASE_COORDS[1]-10)
+        pygame.draw.rect(screen, (0, 0, 0), ui_bg_rect)
         game_state['base'].draw(screen)
         game_state['enemy_base'].draw(screen)
+
+        # Draw buttons
+        for rect, name in ui_buttons:
+            pygame.draw.rect(screen, (255, 255, 255), rect)              # white fill
+            pygame.draw.rect(screen, (0, 0, 0), rect, width=2)           # black border
+            image = unit_button_images[name]
+            img_rect = image.get_rect(center=rect.center)
+            screen.blit(image, img_rect)
         
         # Spawning the vegetables!!
         for vege in game_state["veggies"]:
