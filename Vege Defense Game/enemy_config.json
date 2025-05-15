@@ -4,7 +4,10 @@
     "health": 15,
     "damage": 1,
     "speed": 10,
-    "attack_range": 5,
+    "attack_range": [
+      0,
+      5
+    ],
     "attack_delay": 500
   },
   "Banana": {
@@ -12,7 +15,10 @@
     "health": 10,
     "damage": 1,
     "speed": 12,
-    "attack_range": 30,
+    "attack_range": [
+      0,
+      30
+    ],
     "attack_delay": 600
   },
   "Orange": {
@@ -20,7 +26,10 @@
     "health": 12,
     "damage": 2,
     "speed": 8,
-    "attack_range": 40,
+    "attack_range": [
+      0,
+      40
+    ],
     "attack_delay": 450
   },
   "Grape": {
@@ -28,7 +37,10 @@
     "health": 8,
     "damage": 3,
     "speed": 6,
-    "attack_range": 25,
+    "attack_range": [
+      0,
+      25
+    ],
     "attack_delay": 700
   },
   "Pineapple": {
@@ -36,7 +48,10 @@
     "health": 15,
     "damage": 2,
     "speed": 9,
-    "attack_range": 50,
+    "attack_range": [
+      0,
+      50
+    ],
     "attack_delay": 550
   },
   "Mango": {
@@ -44,7 +59,10 @@
     "health": 10,
     "damage": 4,
     "speed": 7,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 400
   },
   "Watermelon": {
@@ -52,7 +70,10 @@
     "health": 18,
     "damage": 1,
     "speed": 6,
-    "attack_range": 60,
+    "attack_range": [
+      0,
+      60
+    ],
     "attack_delay": 500
   },
   "Strawberry": {
@@ -60,7 +81,10 @@
     "health": 7,
     "damage": 3,
     "speed": 10,
-    "attack_range": 15,
+    "attack_range": [
+      0,
+      15
+    ],
     "attack_delay": 650
   },
   "Cherry": {
@@ -68,7 +92,10 @@
     "health": 9,
     "damage": 2,
     "speed": 8,
-    "attack_range": 25,
+    "attack_range": [
+      0,
+      25
+    ],
     "attack_delay": 600
   },
   "Coconut": {
@@ -76,7 +103,10 @@
     "health": 16,
     "damage": 3,
     "speed": 5,
-    "attack_range": 45,
+    "attack_range": [
+      0,
+      45
+    ],
     "attack_delay": 550
   },
   "Lemon": {
@@ -84,7 +114,10 @@
     "health": 11,
     "damage": 2,
     "speed": 9,
-    "attack_range": 35,
+    "attack_range": [
+      0,
+      35
+    ],
     "attack_delay": 500
   }
 }

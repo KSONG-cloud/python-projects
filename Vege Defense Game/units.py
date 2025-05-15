@@ -52,7 +52,7 @@ class Vegetable:
             for target in targets:
                 # Check if target is within attack range
                 distance = self.calculate_distance(target)
-                if distance <= self.range:
+                if distance >= self.range[0] and  distance <= self.range[1]:
                     target.take_damage(self.damage) # Apply damage to target
 
             self.last_attack_time = current_time
@@ -61,7 +61,7 @@ class Vegetable:
     def is_blocked_by_targets(self, targets):
         for target in targets:
             distance = self.calculate_distance(target)
-            if distance <= self.range:
+            if distance >= self.range[0] and  distance <= self.range[1]:
                 return True
             
         return False
@@ -128,7 +128,7 @@ class Enemy:
     def is_blocked_by_targets(self, targets):
         for target in targets:
             distance = self.calculate_distance(target)
-            if distance <= self.range:
+            if distance >= self.range[0] and  distance <= self.range[1]:
                 return True
             
         return False
@@ -143,7 +143,7 @@ class Enemy:
             for target in targets:
                 # Check if target is within attack range
                 distance = self.calculate_distance(target)
-                if distance <= self.range:
+                if distance >= self.range[0] and  distance <= self.range[1]:
                     target.take_damage(self.damage) # Apply damage to target
 
             self.last_attack_time = current_time

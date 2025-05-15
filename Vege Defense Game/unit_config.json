@@ -4,7 +4,10 @@
     "health": 5,
     "damage": 1,
     "speed": 1,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 500
   },
   "Broccoli": {
@@ -12,7 +15,10 @@
     "health": 10,
     "damage": 2,
     "speed": 6,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 600
   },
   "Tomato": {
@@ -20,7 +26,10 @@
     "health": 4,
     "damage": 3,
     "speed": 12,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 400
   },
   "Lettuce": {
@@ -28,7 +37,10 @@
     "health": 6,
     "damage": 1,
     "speed": 8,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 500
   },
   "Eggplant": {
@@ -36,7 +48,10 @@
     "health": 8,
     "damage": 4,
     "speed": 5,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 700
   },
   "Corn": {
@@ -44,7 +59,10 @@
     "health": 7,
     "damage": 2,
     "speed": 9,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 450
   },
   "Onion": {
@@ -52,7 +70,10 @@
     "health": 5,
     "damage": 3,
     "speed": 7,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 480
   },
   "Pepper": {
@@ -60,7 +81,10 @@
     "health": 6,
     "damage": 2,
     "speed": 11,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 520
   },
   "Cabbage": {
@@ -68,7 +92,10 @@
     "health": 9,
     "damage": 1,
     "speed": 6,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 550
   },
   "Zucchini": {
@@ -76,7 +103,10 @@
     "health": 6,
     "damage": 3,
     "speed": 10,
-    "attack_range": 20,
+    "attack_range": [
+      0,
+      20
+    ],
     "attack_delay": 470
   }
 }
