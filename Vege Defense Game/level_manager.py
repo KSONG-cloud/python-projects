@@ -36,7 +36,7 @@ class LevelManager:
 
         events = []
         for enemy_class, spawn_time in self.level_data:
-            if current_time - self.level_start_time >= spawn_time:
+            if current_time >= spawn_time:
                 events.append((enemy_class, spawn_time))
                 
 

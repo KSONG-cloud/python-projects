@@ -52,7 +52,6 @@ class Vegetable:
             for target in targets:
                 # Check if target is within attack range
                 distance = self.calculate_distance(target)
-                print(target, distance)
                 if distance <= self.range:
                     target.take_damage(self.damage) # Apply damage to target
 
@@ -71,107 +70,6 @@ class Vegetable:
     def calculate_distance(self, target):
         # Calculate distance between self and target
         return target.rect.x - self.x - self.rect.width
-
-
-# class Carrot(Vegetable):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/carrot2.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60,60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 500
-#         self.last_attack_time = 0
-#         super().__init__(health=5, damage=1, speed=1, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Broccoli(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/broccoli.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 600
-#         self.last_attack_time = 0
-#         super().__init__(health=10, damage=2, speed=6, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Tomato(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/tomato.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 400
-#         self.last_attack_time = 0
-#         super().__init__(health=4, damage=3, speed=12, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Lettuce(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/lettuce.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 500
-#         self.last_attack_time = 0
-#         super().__init__(health=6, damage=1, speed=8, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Eggplant(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/eggplant.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 700
-#         self.last_attack_time = 0
-#         super().__init__(health=8, damage=4, speed=5, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Corn(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/corn.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 450
-#         self.last_attack_time = 0
-#         super().__init__(health=7, damage=2, speed=9, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Onion(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/onion.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 480
-#         self.last_attack_time = 0
-#         super().__init__(health=5, damage=3, speed=7, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Pepper(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/pepper.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 520
-#         self.last_attack_time = 0
-#         super().__init__(health=6, damage=2, speed=11, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Cabbage(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/cabbage.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 550
-#         self.last_attack_time = 0
-#         super().__init__(health=9, damage=1, speed=6, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Zucchini(Vegetable):
-#     def __init__(self):
-#         self.image = pygame.image.load("assets/zucchini.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (60, 60))
-#         self.rect = self.image.get_rect(bottomleft=BASE_COORDS)
-#         self.attack_delay = 470
-#         self.last_attack_time = 0
-#         super().__init__(health=6, damage=3, speed=10, rect=self.rect, 
-#                          image=self.image, attack_range=20, last_attack_time=self.last_attack_time)
 
 
 
@@ -194,7 +92,6 @@ class Base:
 
     def take_damage(self, damage):
         self.health -= damage
-        print(f"Base health: {self.health}")
         if self.health <= 0:
             if self.on_destroy:
                 self.on_destroy()      # Call the callback function when base is destroyed
@@ -246,7 +143,6 @@ class Enemy:
             for target in targets:
                 # Check if target is within attack range
                 distance = self.calculate_distance(target)
-                print(target, distance)
                 if distance <= self.range:
                     target.take_damage(self.damage) # Apply damage to target
 
@@ -257,116 +153,6 @@ class Enemy:
         # Calculate distance between self and target
         return self.x - target.rect.x - target.rect.width
 
-
-# class Apple(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/apple.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50,50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 500
-#         self.last_attack_time = 0
-#         super().__init__(health=15, damage=1, speed=10, rect=self.rect, 
-#                          image=self.image, attack_range=5, last_attack_time=self.last_attack_time)
-
-# class Banana(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/banana.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 600
-#         self.last_attack_time = 0
-#         super().__init__(health=10, damage=1, speed=12, rect=self.rect, image=self.image,
-#                          attack_range=30, last_attack_time=self.last_attack_time)
-
-# class Orange(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/orange.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 450
-#         self.last_attack_time = 0
-#         super().__init__(health=12, damage=2, speed=8, rect=self.rect, image=self.image,
-#                          attack_range=40, last_attack_time=self.last_attack_time)
-
-# class Grape(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/grape.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 700
-#         self.last_attack_time = 0
-#         super().__init__(health=8, damage=3, speed=6, rect=self.rect, image=self.image,
-#                          attack_range=25, last_attack_time=self.last_attack_time)
-
-# class Pineapple(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/pineapple.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 550
-#         self.last_attack_time = 0
-#         super().__init__(health=15, damage=2, speed=9, rect=self.rect, image=self.image,
-#                          attack_range=50, last_attack_time=self.last_attack_time)
-
-# class Mango(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/mango.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 400
-#         self.last_attack_time = 0
-#         super().__init__(health=10, damage=4, speed=7, rect=self.rect, image=self.image,
-#                          attack_range=20, last_attack_time=self.last_attack_time)
-
-# class Watermelon(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/watermelon.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 500
-#         self.last_attack_time = 0
-#         super().__init__(health=18, damage=1, speed=6, rect=self.rect, image=self.image,
-#                          attack_range=60, last_attack_time=self.last_attack_time)
-
-# class Strawberry(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/strawberry.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 650
-#         self.last_attack_time = 0
-#         super().__init__(health=7, damage=3, speed=10, rect=self.rect, image=self.image,
-#                          attack_range=15, last_attack_time=self.last_attack_time)
-
-# class Cherry(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/cherry.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 600
-#         self.last_attack_time = 0
-#         super().__init__(health=9, damage=2, speed=8, rect=self.rect, image=self.image,
-#                          attack_range=25, last_attack_time=self.last_attack_time)
-
-# class Coconut(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/coconut.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 550
-#         self.last_attack_time = 0
-#         super().__init__(health=16, damage=3, speed=5, rect=self.rect, image=self.image,
-#                          attack_range=45, last_attack_time=self.last_attack_time)
-
-# class Lemon(Enemy):
-#     def __init__(self):  
-#         self.image = pygame.image.load("assets/lemon.png").convert_alpha()
-#         self.image = pygame.transform.scale(self.image, (50, 50))
-#         self.rect = self.image.get_rect(bottomright=ENEMY_BASE_COORDS)
-#         self.attack_delay = 500
-#         self.last_attack_time = 0
-#         super().__init__(health=11, damage=2, speed=9, rect=self.rect, image=self.image,
-#                          attack_range=35, last_attack_time=self.last_attack_time)
 
         
 class EnemyBase:
