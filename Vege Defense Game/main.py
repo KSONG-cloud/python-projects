@@ -331,7 +331,10 @@ def main():
             # Paused message
             elif game_state["state"] == "paused":
                 pause_msg = font.render("Paused", True, (255, 255, 255))
+                shadow = font.render("Paused", True, (0, 0, 0))
                 pause_msg_rect = pause_msg.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                
+                screen.blit(shadow, (pause_msg_rect.x + 2, pause_msg_rect.y + 2))
                 screen.blit(pause_msg, pause_msg_rect)
 
             # Gameover message
