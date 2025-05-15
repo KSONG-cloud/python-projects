@@ -185,6 +185,8 @@ def main():
     
     button_rects = []
 
+    pause_button_rect = pygame.Rect(1100, 540, 80, 40)
+
     while game_state['running']:
         # Control FPS
         clock.tick(FPS)
@@ -198,6 +200,11 @@ def main():
             if event.type == pygame.QUIT:
                 game_state['running'] = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                if pause_button_rect.collidepoint(event.pos):
+                    if game_state["state"] == "playing":
+                        game_state["state"] = "paused"
+                    elif game_state["state"] == "paused":
+                        game_state["state"] = "playing"
                 if button_rects:
                     for rect,action in button_rects:
                         if rect.collidepoint(event.pos):
@@ -210,13 +217,14 @@ def main():
                             elif action == "quit":
                                 pygame.quit()
                                 sys.exit()
-                for rect, name in ui_buttons:
-                    if rect.collidepoint(event.pos):
-                        if len(game_state["veggies"]) < MAX_VEGGIES:
-                            new_unit = create_veggie(name)
-                            game_state["veggies"].append(new_unit)
-                        else:
-                            message = font.render("Max number of veggies spawned!", True, (255, 0, 0))
+                if game_state['state'] == 'playing':
+                    for rect, name in ui_buttons:
+                        if rect.collidepoint(event.pos):
+                            if len(game_state["veggies"]) < MAX_VEGGIES:
+                                new_unit = create_veggie(name)
+                                game_state["veggies"].append(new_unit)
+                            else:
+                                message = font.render("Max number of veggies spawned!", True, (255, 0, 0))
 
             elif event.type == pygame.KEYDOWN:
                 if event.key in UNIT_KEYS:
@@ -244,38 +252,56 @@ def main():
             img_rect = image.get_rect(center=rect.center)
             screen.blit(image, img_rect)
         
-        # Spawning the vegetables!!
-        for vege in game_state["veggies"]:
-            targets = game_state["enemies"] + [game_state['enemy_base']]
-            vege.move(targets)
-            vege.draw(screen)
+        ### Pause button
+        pygame.draw.rect(screen, (200, 200, 200), pause_button_rect, border_radius=8)
+        pygame.draw.rect(screen, (0, 0, 0), pause_button_rect, 2, border_radius=8)
+
+        pause_font = pygame.font.Font(None, 24)
+        label = "Pause" if game_state["state"] == "playing" else "Resume"
+        pause_text = pause_font.render(label, True, (0, 0, 0))
+        pause_text_rect = pause_text.get_rect(center=pause_button_rect.center)
+        screen.blit(pause_text, pause_text_rect)
+
+        # Updating the game
+        if game_state["state"] == "playing":
+            # Spawning the vegetables!!
+            for vege in game_state["veggies"]:
+                targets = game_state["enemies"] + [game_state['enemy_base']]
+                vege.move(targets)
+                
+                # Veggies Attack !!!!
+                vege.attack(targets=targets, current_time=current_time)
+
+
+            # Spawning Enemies!!!
+            enemies_to_spawn = game_state['level_manager'].update(current_time=current_time)
             
-            # Veggies Attack !!!!
-            vege.attack(targets=targets, current_time=current_time)
+            for enemy in enemies_to_spawn:
+                print(enemy, "is spawned at time", current_time)
+                new_enemy = create_enemy(enemy)
+                game_state["enemies"].append(new_enemy)
 
 
-        # Spawning Enemies!!!
-        enemies_to_spawn = game_state['level_manager'].update(current_time=current_time)
-        
-        for enemy in enemies_to_spawn:
-            print(enemy, "is spawned at time", current_time)
-            new_enemy = create_enemy(enemy)
-            game_state["enemies"].append(new_enemy)
+            for enemy in game_state["enemies"]:
+                targets = game_state["veggies"] + [game_state['base']]
+                enemy.move(targets)
 
-
-        for enemy in game_state["enemies"]:
-            targets = game_state["veggies"] + [game_state['base']]
-            enemy.move(targets)
-            enemy.draw(screen)
-
-            # Enemies Attack !!!!
-            enemy.attack(targets=targets, current_time=current_time)
+                # Enemies Attack !!!!
+                enemy.attack(targets=targets, current_time=current_time)
 
 
 
         # Return alive entities
         game_state["veggies"] = return_alive(game_state["veggies"])
         game_state["enemies"] = return_alive(game_state["enemies"])
+
+        # Drawing the veggies and enemies
+        for vege in game_state["veggies"]:
+            vege.draw(screen)
+
+        for enemy in game_state["enemies"]:
+            enemy.draw(screen)
+
 
 
         # Max veggies spawned message
@@ -291,21 +317,30 @@ def main():
             # Blit the message (rendered text) at the calculated position
             screen.blit(message, (x_pos, y_pos))
 
-
         # Game state checking
-        if game_state['state'] in ["win", "gameover"]:
+        if game_state['state'] in ["win", "gameover", "paused"]:
             blurred = blur_screen(screen.copy(), WIDTH, HEIGHT)
             screen.blit(blurred, (0,0))
             
-
+            # Win message
             if game_state['state'] == "win":
                 buttons = [("Next Level", "next"), ("Close", "quit")]
                 label = "You win!"
+                button_rects = draw_popup(screen, label, buttons, WIDTH, HEIGHT)
+            
+            # Paused message
+            elif game_state["state"] == "paused":
+                pause_msg = font.render("Paused", True, (255, 255, 255))
+                pause_msg_rect = pause_msg.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                screen.blit(pause_msg, pause_msg_rect)
+
+            # Gameover message
             else:
                 buttons = [("Start Again", "restart"), ("Close", "quit")]
                 label = "Game Over"
+                button_rects = draw_popup(screen, label, buttons, WIDTH, HEIGHT)
 
-            button_rects = draw_popup(screen, label, buttons, WIDTH, HEIGHT)
+            
         
         # Update screen
         pygame.display.flip()
