@@ -1,0 +1,16 @@
+# Ignore virtual environments
+venv/
+.env/
+__pycache__/
+*.pyc
+
+
+# Windows
+Thumbs.db
+
+# VSCode and PyCharm project files
+.vscode/
+.idea/
+
+# Environment variable files
+.env
