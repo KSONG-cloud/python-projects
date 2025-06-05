@@ -92,3 +92,20 @@ def logout():
     return redirect(url_for('index'))
 
 
+
+# This is a decorator to protect routes that require a 
+# logged-in user.
+def login_required(view):
+    # This preserves the original function's metadata 
+    # (like name, docstring)
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        # 'g' is a special Flask object that stores data during a request.
+        # Here we check if g.user is None (i.e., not logged in)
+        if g.user is None:
+            # If the user is not logged in, redirect them to the login page
+            return redirect(url_for('auth.login'))
+        # If the user is logged in, proceed with the original view function
+        return view(**kwargs)
+    # Return the new, wrapped version of the view function
+    return wrapped_view
