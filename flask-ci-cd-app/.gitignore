@@ -49,11 +49,10 @@ assets/.DS_Store
 .env
 
 # Flaskr
-.venv/
+venv/
 
 *.pyc
 __pycache__/
-flaskr/__pycache__
 
 instance/
 
